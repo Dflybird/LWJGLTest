@@ -13,6 +13,9 @@ public class Mesh {
 
     private int shaderProgramId;
 
+    private int position;
+    private int inColour;
+
     //VBOs
     private int positionVboId;
     private int indexVboId;
@@ -25,6 +28,9 @@ public class Mesh {
 
     public Mesh(int shaderProgramId, float[] positions, int[] indices, float[] colours) {
         this.shaderProgramId = shaderProgramId;
+        this.position = glGetAttribLocation(shaderProgramId, "position");
+        this.inColour = glGetAttribLocation(shaderProgramId, "inColour");
+        this.vertexCount = indices.length;
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
@@ -33,9 +39,6 @@ public class Mesh {
         initIndexBuffer(indices);
         initColour(colours);
 
-        //解绑VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         //解绑VAO
         glBindVertexArray(0);
     }
@@ -43,31 +46,31 @@ public class Mesh {
     public void render(){
 
         glBindVertexArray(vaoId);
-        glEnableVertexAttribArray(glGetAttribLocation(shaderProgramId, "position"));
-        glEnableVertexAttribArray(glGetAttribLocation(shaderProgramId, "inColour"));
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-//        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
+        glEnableVertexAttribArray(position);
+        glEnableVertexAttribArray(inColour);
+
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+
+        glDisableVertexAttribArray(position);
+        glDisableVertexAttribArray(inColour);
         glBindVertexArray(0);
     }
 
     public void clearUp(){
         glDisableVertexAttribArray(0);
 
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
-
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDeleteBuffers(positionVboId);
         glDeleteBuffers(indexVboId);
         glDeleteBuffers(colourVboId);
+
+        // Delete the VAO
+        glBindVertexArray(0);
+        glDeleteVertexArrays(vaoId);
     }
 
     private void initPositionBuffer(float[] positions){
-        vertexCount = positions.length / 3;
         FloatBuffer verticesBuffer = null;
         try {
             verticesBuffer = MemoryUtil.memAllocFloat(positions.length);
@@ -75,7 +78,10 @@ public class Mesh {
             positionVboId = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
             glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(glGetAttribLocation(shaderProgramId, "position"), 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(position, 3, GL_FLOAT, false, 0, 0);
+
+            //解绑VBOs
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         } finally {
             //释放缓存
             if (verticesBuffer != null) {
@@ -105,9 +111,9 @@ public class Mesh {
             colourBuffer = MemoryUtil.memAllocFloat(colours.length);
             colourBuffer.put(colours).flip();
             colourVboId = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
+            glBindBuffer(GL_ARRAY_BUFFER, colourVboId);
             glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(glGetAttribLocation(shaderProgramId, "inColour"), 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(inColour, 3, GL_FLOAT, false, 0, 0);
         } finally {
             if (colourBuffer != null) {
                 MemoryUtil.memFree(colourBuffer);
