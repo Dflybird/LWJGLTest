@@ -1,3 +1,5 @@
+package graphic;
+
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;

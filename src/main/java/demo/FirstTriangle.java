@@ -1,3 +1,6 @@
+package demo;
+
+import config.Constant;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
@@ -77,7 +80,8 @@ public class FirstTriangle {
         //读取文件
         StringBuilder builder = new StringBuilder();
         try {
-            FileInputStream fileInputStream = new FileInputStream("vertex.vert");
+            File file = new File(Constant.DEFAULT_RESOURCES_DIR, "vertex.vert");
+            FileInputStream fileInputStream = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -102,7 +106,8 @@ public class FirstTriangle {
         //读文件
         builder.setLength(0);
         try {
-            FileInputStream fileInputStream = new FileInputStream("fragment.frag");
+            File file = new File(Constant.DEFAULT_RESOURCES_DIR, "fragment.frag");
+            FileInputStream fileInputStream = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {

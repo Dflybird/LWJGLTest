@@ -1,19 +1,16 @@
+package demo;
+
+import config.Constant;
+import graphic.Mesh;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryUtil;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.FloatBuffer;
+import java.io.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
@@ -84,7 +81,7 @@ public class SecondRectangle {
         //读取文件
         StringBuilder builder = new StringBuilder();
         try {
-            FileInputStream fileInputStream = new FileInputStream("mesh.vert");
+            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, "mesh.vert"));
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -109,7 +106,7 @@ public class SecondRectangle {
         //读文件
         builder.setLength(0);
         try {
-            FileInputStream fileInputStream = new FileInputStream("mesh.frag");
+            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, "mesh.frag"));
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {
