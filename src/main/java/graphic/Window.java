@@ -3,8 +3,10 @@ package graphic;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
@@ -17,7 +19,10 @@ public class Window {
     private int width;
     private int height;
 
-
+    public Window(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
     public void init(){
         GLFWErrorCallback.createPrint(System.err).set();
@@ -31,7 +36,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -44,5 +49,34 @@ public class Window {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+    }
+
+    public void clean(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    public void render(){
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    public void cleanup(){
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+    }
+
+    public boolean isClosed(){
+        return glfwWindowShouldClose(window);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

@@ -172,7 +172,7 @@ public class SecondRectangle {
     }
 
     private void cleanup(){
-        mesh.clearUp();
+        mesh.clearup();
 
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
