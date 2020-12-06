@@ -49,6 +49,12 @@ public class Window {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+
+        // Set the clear color
+        glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+        //绘制3D对象时，远处的像素比近处的像素先绘制
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void clean(){

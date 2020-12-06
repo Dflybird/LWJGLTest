@@ -9,23 +9,24 @@ import shader.ShaderProgram;
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 /**
- * @Author: gq
- * @Date: 2020/12/3 14:45
- */
-public class Transform {
-
+ * @Author Gq
+ * @Date 2020/12/6 17:19
+ * @Version 1.0
+ **/
+public class Textures {
     private Window window;
     private ShaderProgram program;
     private Mesh mesh;
 
+    private float deltaY;
+
     public static void main(String[] args) {
-        new Transform().run();
+        new Textures().run();
     }
 
     private void run(){
@@ -41,22 +42,47 @@ public class Transform {
         program.init();
 
 
-        float[] positions = new float[]{
-                -0.1f,  0.1f, 0f,
-                -0.1f, -0.1f, 0f,
-                0.1f, -0.1f, 0f,
-                0.1f,  0.1f, 0f,
-                0.2f,    0,   0f,
+        float[] positions = new float[] {
+                // VO
+                -0.5f,  0.5f,  0.5f,
+                // V1
+                -0.5f, -0.5f,  0.5f,
+                // V2
+                0.5f, -0.5f,  0.5f,
+                // V3
+                0.5f,  0.5f,  0.5f,
+                // V4
+                -0.5f,  0.5f, -0.5f,
+                // V5
+                0.5f,  0.5f, -0.5f,
+                // V6
+                -0.5f, -0.5f, -0.5f,
+                // V7
+                0.5f, -0.5f, -0.5f,
         };
-        int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,2,3,4
+        int[] indices = new int[] {
+                // Front face
+                0, 1, 3, 3, 1, 2,
+                // Top Face
+                4, 0, 3, 5, 4, 3,
+                // Right face
+                3, 2, 7, 5, 3, 7,
+                // Left face
+                6, 1, 0, 6, 0, 4,
+                // Bottom face
+                2, 1, 6, 2, 6, 7,
+                // Back face
+                7, 6, 4, 7, 4, 5,
         };
         float[] colours = new float[]{
                 0.5f, 0.0f, 0.0f,
                 0.0f, 0.5f, 0.0f,
                 0.0f, 0.0f, 0.5f,
                 0.0f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.0f,
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f,
         };
 
         mesh = new Mesh(program.getProgramId(), positions, indices, colours);
@@ -84,10 +110,16 @@ public class Transform {
                 glUniformMatrix4fv(projection, false, floatBuffer);
             }
 
+            //自动旋转
+            deltaY += 1.5f;
+            if ( deltaY > 360 ) {
+                deltaY = 0;
+            }
+
             //平移，旋转，缩放
-            Vector3f translation = new Vector3f(0,0f,-1f);
-            Vector3f rotation = new Vector3f(0,45,0);   //角度
-            float scale = 1f;
+            Vector3f translation = new Vector3f(0,0,-1.5f);
+            Vector3f rotation = new Vector3f(30,deltaY,0);   //角度
+            float scale = 0.5f;
 
             Matrix4f worldMatrix = new Matrix4f()
                     .translate(translation)
