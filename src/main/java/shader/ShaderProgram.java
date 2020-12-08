@@ -15,7 +15,7 @@ public class ShaderProgram {
 
     private int programId;
 
-    public void init(){
+    public void init(String vertFile, String fragFile){
         programId = glCreateProgram();
         if (programId == 0) {
             throw new RuntimeException("Could not create Shader");
@@ -29,7 +29,7 @@ public class ShaderProgram {
         //读取文件
         StringBuilder builder = new StringBuilder();
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, "transform.vert"));
+            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, vertFile));
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -54,7 +54,7 @@ public class ShaderProgram {
         //读文件
         builder.setLength(0);
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, "mesh.frag"));
+            FileInputStream fileInputStream = new FileInputStream(new File(Constant.DEFAULT_RESOURCES_DIR, fragFile));
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             while ((line = reader.readLine()) != null) {

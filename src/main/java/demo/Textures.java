@@ -9,7 +9,6 @@ import shader.ShaderProgram;
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
@@ -39,7 +38,7 @@ public class Textures {
         window = new Window(600, 600);
         program = new ShaderProgram();
         window.init();
-        program.init();
+        program.init("texture.vert", "texture.frag");
 
 
         float[] positions = new float[] {
@@ -144,7 +143,7 @@ public class Textures {
     }
 
     private void cleanup(){
-        mesh.clearup();
+        mesh.cleanup();
         program.cleanup();
         window.cleanup();
     }

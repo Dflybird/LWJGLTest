@@ -9,10 +9,7 @@ import shader.ShaderProgram;
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @Author: gq
@@ -38,7 +35,7 @@ public class Transform {
         window = new Window(600, 600);
         program = new ShaderProgram();
         window.init();
-        program.init();
+        program.init("transform.vert", "mesh.frag");
 
 
         float[] positions = new float[]{
@@ -112,7 +109,7 @@ public class Transform {
     }
 
     private void cleanup(){
-        mesh.clearup();
+        mesh.cleanup();
         program.cleanup();
         window.cleanup();
     }

@@ -58,7 +58,7 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public void clearup(){
+    public void cleanup(){
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs
