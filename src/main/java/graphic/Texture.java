@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @Author Gq
@@ -22,12 +25,11 @@ public class Texture {
     private int textureId;
 
     public Texture(String textureFile) {
-
-
+        init(textureFile);
     }
 
     public void cleanup(){
-
+        glDeleteTextures(textureId);
     }
 
     private void init(String textureFile){
@@ -39,20 +41,31 @@ public class Texture {
             decoder.decode(byteBuffer, 4*decoder.getWidth(), PNGDecoder.Format.RGBA);
             byteBuffer.flip();
 
+
+            //创建纹理
+            textureId = glGenTextures();
+
+            //绑定纹理
+            glBindTexture(GL_TEXTURE_2D, textureId);
+
+            //解压缩RGBA
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            //上传纹理数据
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
+
+            //生成mipmap
+            glGenerateMipmap(GL_TEXTURE_2D);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load texture file");
         }
-
-        //创建纹理
-        textureId = glGenTextures();
-
-        //绑定纹理
-        glBindTexture(GL_TEXTURE_2D, textureId);
-
-        //解压缩RGBA
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-        //上传纹理数据
     }
 
+    public int getTextureId() {
+        return textureId;
+    }
 }

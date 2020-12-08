@@ -22,17 +22,22 @@ public class Mesh {
     private int positionVboId;
     private int indexVboId;
     private int colourVboId;
+    private int textureVboId;
 
     //VAO
     private int vaoId;
 
     private int vertexCount;
 
+    private final boolean isTex;
+    private Texture texture;
+
     public Mesh(int shaderProgramId, float[] positions, int[] indices, float[] colours) {
         this.shaderProgramId = shaderProgramId;
         this.position = glGetAttribLocation(shaderProgramId, "position");
         this.inColour = glGetAttribLocation(shaderProgramId, "inColour");
         this.vertexCount = indices.length;
+        this.isTex = false;
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
@@ -45,27 +50,54 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
+    public Mesh(int shaderProgramId, float[] positions, int[] indices, Texture texture, float[] textureCoordinate) {
+        this.shaderProgramId = shaderProgramId;
+        this.position = glGetAttribLocation(shaderProgramId, "position");
+        this.inColour = glGetAttribLocation(shaderProgramId, "inColour");
+        this.vertexCount = indices.length;
+        this.isTex = true;
+        this.texture = texture;
+
+        vaoId = glGenVertexArrays();
+        glBindVertexArray(vaoId);
+
+        initPositionBuffer(positions);
+        initIndexBuffer(indices);
+        initTexture(textureCoordinate);
+
+        //解绑VAO
+        glBindVertexArray(0);
+    }
+
     public void render(){
 
+        if (isTex) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+        }
+
         glBindVertexArray(vaoId);
-        glEnableVertexAttribArray(position);
-        glEnableVertexAttribArray(inColour);
 
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
-        glDisableVertexAttribArray(position);
-        glDisableVertexAttribArray(inColour);
         glBindVertexArray(0);
     }
 
     public void cleanup(){
-        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(position);
+        glDisableVertexAttribArray(inColour);
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(positionVboId);
         glDeleteBuffers(indexVboId);
-        glDeleteBuffers(colourVboId);
+        if (isTex) {
+            glDeleteBuffers(textureVboId);
+        } else {
+            glDeleteBuffers(colourVboId);
+        }
 
         // Delete the VAO
         glBindVertexArray(0);
@@ -81,7 +113,7 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
             glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(position, 3, GL_FLOAT, false, 0, 0);
-
+            glEnableVertexAttribArray(position);
             //解绑VBOs
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         } finally {
@@ -116,9 +148,29 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, colourVboId);
             glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(inColour, 3, GL_FLOAT, false, 0, 0);
+            glEnableVertexAttribArray(inColour);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         } finally {
             if (colourBuffer != null) {
                 MemoryUtil.memFree(colourBuffer);
+            }
+        }
+    }
+
+    private void initTexture(float[] textureCoordinate) {
+        FloatBuffer textureBuffer = null;
+        try {
+            textureBuffer = MemoryUtil.memAllocFloat(textureCoordinate.length);
+            textureBuffer.put(textureCoordinate).flip();
+            textureVboId = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
+            glBufferData(GL_ARRAY_BUFFER, textureBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(inColour, 2, GL_FLOAT, false, 0, 0);
+            glEnableVertexAttribArray(inColour);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        } finally {
+            if (textureBuffer != null) {
+                MemoryUtil.memFree(textureBuffer);
             }
         }
     }
