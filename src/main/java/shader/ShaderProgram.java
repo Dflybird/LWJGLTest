@@ -1,12 +1,16 @@
 package shader;
 
 import config.Constant;
+import org.joml.Matrix4f;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL20.*;
 
 /**
+ * 着色器，用于管理着色文件，配置，连接，绑定着色器程序
  * @Author Gq
  * @Date 2020/12/3 23:14
  * @Version 1.0
@@ -15,7 +19,11 @@ public class ShaderProgram {
 
     private int programId;
 
+    private Map<String, Integer> uniforms;
+
     public void init(String vertFile, String fragFile){
+        uniforms = new HashMap<>();
+
         programId = glCreateProgram();
         if (programId == 0) {
             throw new RuntimeException("Could not create Shader");
@@ -79,6 +87,15 @@ public class ShaderProgram {
 
     }
 
+    public void setUniform(String uniform, Matrix4f value){
+
+    }
+
+    public void setUniform(String uniform, int value){
+        Integer uniformIndex = uniforms.get(uniform);
+        glUniform1i(uniformIndex, value);
+    }
+
     public void bind() {
         //使用着色器程序
         glUseProgram(programId);
@@ -97,5 +114,9 @@ public class ShaderProgram {
 
     public int getProgramId() {
         return programId;
+    }
+
+    private void createUniform(String uniform){
+        uniforms.put(uniform, glGetUniformLocation(programId, uniform));
     }
 }
