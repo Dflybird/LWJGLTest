@@ -2,8 +2,10 @@ package shader;
 
 import config.Constant;
 import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
 
 import java.io.*;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,8 +89,17 @@ public class ShaderProgram {
 
     }
 
-    public void setUniform(String uniform, Matrix4f value){
+    public void createUniform(String uniform){
+        uniforms.put(uniform, glGetUniformLocation(programId, uniform));
+    }
 
+    public void setUniform(String uniform, Matrix4f value){
+        try (MemoryStack memoryStack = MemoryStack.stackPush()){
+            FloatBuffer floatBuffer = memoryStack.callocFloat(16);
+            value.get(floatBuffer);
+            Integer uniformIndex = uniforms.get(uniform);
+            glUniformMatrix4fv(uniformIndex, false, floatBuffer);
+        }
     }
 
     public void setUniform(String uniform, int value){
@@ -116,7 +127,4 @@ public class ShaderProgram {
         return programId;
     }
 
-    private void createUniform(String uniform){
-        uniforms.put(uniform, glGetUniformLocation(programId, uniform));
-    }
 }
