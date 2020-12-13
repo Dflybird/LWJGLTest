@@ -85,4 +85,8 @@ public class Window {
     public int getHeight() {
         return height;
     }
+
+    public long getWindow() {
+        return window;
+    }
 }

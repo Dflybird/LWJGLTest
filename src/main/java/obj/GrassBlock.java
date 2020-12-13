@@ -134,7 +134,7 @@ public class GrassBlock extends GameObj {
     }
 
     @Override
-    public void render(Window window) {
+    public void render(Window window, Camera camera) {
 
         program.bind();
         float fov = (float) Math.toRadians(60);
@@ -151,8 +151,15 @@ public class GrassBlock extends GameObj {
                 .rotateZ((float) Math.toRadians(rotation.z))
                 .scale(scale);
 
+        Vector3f cameraPos = camera.getPosition();
+        Vector3f cameraRot = camera.getRotation();
+        Matrix4f viewMatrix = new Matrix4f()
+                .rotateX((float) Math.toRadians(cameraRot.x))
+                .rotateY((float) Math.toRadians(cameraRot.y))
+                .translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+
         program.setUniform("projection", projectionMatrix);
-        program.setUniform("world", worldMatrix);
+        program.setUniform("world", viewMatrix.mul(worldMatrix));
         program.setUniform("texture_sampler", 0);
 
         mesh.render();

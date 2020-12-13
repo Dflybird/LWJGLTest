@@ -28,7 +28,7 @@ public abstract class GameObj {
         this(new Vector3f(0,0,0), new Vector3f(0,0,0));
     }
 
-    public abstract void render(Window window);
+    public abstract void render(Window window, Camera camera);
 
     public abstract void cleanup();
 
