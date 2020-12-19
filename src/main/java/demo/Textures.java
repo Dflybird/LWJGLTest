@@ -2,6 +2,7 @@ package demo;
 
 import graphic.Mesh;
 import graphic.Texture;
+import graphic.TextureMesh;
 import graphic.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -149,7 +150,7 @@ public class Textures {
                 1.0f, 0.5f,
         };
         texture = new Texture("texture/grassblock.png");
-        mesh = new Mesh(program.getProgramId(), positions, indices, texture, textCoords);
+        mesh = new TextureMesh(program.getProgramId(), positions, indices, texture, textCoords);
 //        mesh = new Mesh(program.getProgramId(), positions, indices, colours);
     }
 

@@ -1,5 +1,6 @@
 package demo;
 
+import graphic.ColourMesh;
 import graphic.Mesh;
 import graphic.Window;
 import org.joml.Matrix4f;
@@ -56,7 +57,7 @@ public class Transform {
                 0.5f, 0.5f, 0.0f,
         };
 
-        mesh = new Mesh(program.getProgramId(), positions, indices, colours);
+        mesh = new ColourMesh(program.getProgramId(), positions, indices, colours);
     }
 
     private void loop(){

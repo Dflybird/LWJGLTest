@@ -2,6 +2,7 @@ package obj;
 
 import graphic.Mesh;
 import graphic.Texture;
+import graphic.TextureMesh;
 import graphic.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -126,7 +127,7 @@ public class GrassBlock extends GameObj {
         program.init("texture.vert", "texture.frag");
 
         texture = new Texture("texture/grassblock.png");
-        mesh = new Mesh(program.getProgramId(), positions, indices, texture, textureCoordinates);
+        mesh = new TextureMesh(program.getProgramId(), positions, indices, texture, textureCoordinates);
 
         program.createUniform("projection");
         program.createUniform("world");

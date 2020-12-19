@@ -1,6 +1,7 @@
 package demo;
 
 import config.Constant;
+import graphic.ColourMesh;
 import graphic.Mesh;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -148,7 +149,7 @@ public class SecondRectangle {
                 0.0f, 0.5f, 0.5f,
         };
 
-       mesh = new Mesh(programId, positions, indices, colours);
+       mesh = new ColourMesh(programId, positions, indices, colours);
 
     }
 
