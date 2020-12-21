@@ -30,7 +30,6 @@ public class TextureMesh extends Mesh {
     //VBOs
     private int positionVboId;
     private int indexVboId;
-    private int colourVboId;
     private int textureVboId;
 
     //VAO
@@ -85,6 +84,8 @@ public class TextureMesh extends Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     private void initPositionBuffer(float[] positions){
