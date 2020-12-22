@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class ObjMesh extends Mesh {
     private final int position;
     private final int inColour;
+    private final int vertexNormal;
 
     //VBOs
     private int positionVboId;
@@ -31,9 +32,12 @@ public class ObjMesh extends Mesh {
 
     private final int vertexCount;
 
+    private Texture texture;
+
     public ObjMesh(int shaderProgramId, float[] positions, int[] indices, float[] textureCoordinate, float[] normals) {
         this.position = glGetAttribLocation(shaderProgramId, "position");
         this.inColour = glGetAttribLocation(shaderProgramId, "inColour");
+        this.vertexNormal = glGetAttribLocation(shaderProgramId, "vertexNormal");
         this.vertexCount = indices.length;
 
         vaoId = glGenVertexArrays();
@@ -41,16 +45,20 @@ public class ObjMesh extends Mesh {
 
         initPositionBuffer(positions);
         initIndexBuffer(indices);
+        initTextureBuffer(textureCoordinate);
+        initNormalBuffer(normals);
 
         //解绑VAO
         glBindVertexArray(0);
     }
     @Override
     public void render() {
-//        // Activate firs texture bank
-//        glActiveTexture(GL_TEXTURE0);
-//        // Bind the texture
-//        glBindTexture(GL_TEXTURE_2D, );
+        if (texture != null) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+        }
 
         glBindVertexArray(vaoId);
 
@@ -63,11 +71,14 @@ public class ObjMesh extends Mesh {
     public void cleanup() {
         glDisableVertexAttribArray(position);
         glDisableVertexAttribArray(inColour);
+        glDisableVertexAttribArray(vertexNormal);
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(positionVboId);
         glDeleteBuffers(indexVboId);
+        glDeleteBuffers(textureVboId);
+        glDeleteBuffers(normalVboId);
 
         // Delete the VAO
         glBindVertexArray(0);
@@ -94,6 +105,10 @@ public class ObjMesh extends Mesh {
                 MemoryUtil.memFree(verticesBuffer);
             }
         }
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
     private void initIndexBuffer(int[] indices){
@@ -138,8 +153,8 @@ public class ObjMesh extends Mesh {
             normalVboId = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, normalVboId);
             glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(inColour, 3, GL_FLOAT, false, 0, 0);
-            glEnableVertexAttribArray(inColour);
+            glVertexAttribPointer(vertexNormal, 3, GL_FLOAT, false, 0, 0);
+            glEnableVertexAttribArray(vertexNormal);
             //解绑VBOs
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         } finally {
@@ -148,5 +163,9 @@ public class ObjMesh extends Mesh {
                 MemoryUtil.memFree(normalsBuffer);
             }
         }
+    }
+
+    public boolean isTextured() {
+        return this.texture != null;
     }
 }

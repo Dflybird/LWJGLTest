@@ -27,10 +27,10 @@ public abstract class GameEngine {
 
             input();
             step();
+            render();
 
             window.render();
         }
-        render();
     }
 
     protected void init(){
