@@ -1,10 +1,8 @@
 package demo;
 
+import config.Constant;
 import game.GameEngine;
-import obj.Bunny;
-import obj.Cube;
-import obj.GameObj;
-import obj.GrassBlock;
+import obj.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -25,6 +23,8 @@ public class ObjDemo extends GameEngine {
         super.init();
         gameObjList.add(new Cube(new Vector3f(-0.5f,0,-1.5f), new Vector3f(0,0,0),0.2f));
         gameObjList.add(new Bunny(new Vector3f(0.5f,0,-1.5f), new Vector3f(0,0,0),0.3f));
+        gameObjList.add(new LocalModel(Constant.DEFAULT_RESOURCES_DIR + "/models/island.obj",
+                new Vector3f(0f,0,-3f), new Vector3f(0,0,0),0.01f));
     }
 
     private final Vector3f cameraInc = new Vector3f();
