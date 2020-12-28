@@ -76,7 +76,9 @@ vec4 calcPointLight(PointLight pointLight, vec3 vertexPosition, vec3 vertexNorma
 
     //atenuation
     float toLightDistance = length(toLightDirection);
-    float attenuation = pointLight.att.constant + pointLight.att.linear * toLightDistance + pointLight.att.exponent * toLightDistance * toLightDistance;
+    float attenuation = pointLight.att.constant +
+    pointLight.att.linear * toLightDistance +
+    pointLight.att.exponent * toLightDistance * toLightDistance;
     return (diffuseColour + specularColour) / attenuation;
 }
 
@@ -85,4 +87,5 @@ void main()
     setColour(material, exTextureCoordinate);
     vec4 componentColour = calcPointLight(pointLight, exWorldPos, exVertexNormal);
     fragColor = ambientC * vec4(ambientLight, 1) + componentColour;
+//    fragColor = ambientC * vec4(ambientLight, 1);
 }

@@ -4,6 +4,7 @@ import graphic.MouseEvent;
 import graphic.Window;
 import obj.Camera;
 import obj.GameObj;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public abstract class GameEngine {
         window.init();
 
         gameObjList = new ArrayList<>();
-        camera = new Camera();
+        camera = new Camera(new Vector3f(0, 0, 1f));
 
         mouseEvent = new MouseEvent();
         mouseEvent.init(window);

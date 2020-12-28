@@ -13,8 +13,11 @@ public class Camera {
     private Vector3f rotation;
 
     public Camera() {
-        position = new Vector3f(0, 0, 0);
-        rotation = new Vector3f(0, 0, 0);
+        this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+    }
+
+    public Camera(Vector3f position) {
+        this(position, new Vector3f(0, 0, 0));
     }
 
     public Camera(Vector3f position, Vector3f rotation) {

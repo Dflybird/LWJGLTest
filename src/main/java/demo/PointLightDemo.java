@@ -32,9 +32,9 @@ public class PointLightDemo extends GameEngine {
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
         specularPower = 1;
         Vector3f lightColour = new Vector3f(1, 1, 1);
-        Vector3f lightPosition = new Vector3f(10, 0, 1);
+        Vector3f lightPosition = new Vector3f(0, 0, 3);
         float lightIntensity = 1.0f;
-        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+        PointLight.Attenuation att = new PointLight.Attenuation(0.6f, 0.2f, 0.2f);
         pointLight = new PointLight(lightColour, lightPosition, lightIntensity, att);
         program = new ShaderProgram();
         program.init("point_light.vert", "point_light.frag");
@@ -46,8 +46,8 @@ public class PointLightDemo extends GameEngine {
         program.createUniform("specularPower");
         program.createMaterialUniforms("material");
         program.createPointLightUniforms("pointLight");
-//        gameObjList.add(new LightCube(new Vector3f(-0.5f,0,-1.5f), new Vector3f(0,0,0),0.2f, program));
-        gameObjList.add(new LightBunny(new Vector3f(0.5f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
+        gameObjList.add(new LightCube(new Vector3f(-1f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
+        gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
     }
 
     @Override

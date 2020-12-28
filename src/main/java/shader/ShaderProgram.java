@@ -101,9 +101,9 @@ public class ShaderProgram {
         createUniform(uniform + ".colour");
         createUniform(uniform + ".position");
         createUniform(uniform + ".intensity");
-        createUniform(uniform + "att.constant");
-        createUniform(uniform + "att.linear");
-        createUniform(uniform + "att.exponent");
+        createUniform(uniform + ".att.constant");
+        createUniform(uniform + ".att.linear");
+        createUniform(uniform + ".att.exponent");
     }
 
     public void createMaterialUniforms(String uniform) {
@@ -149,9 +149,9 @@ public class ShaderProgram {
         setUniform(uniform + ".position", pointLight.getPosition());
         setUniform(uniform + ".intensity", pointLight.getIntensity());
         PointLight.Attenuation att = pointLight.getAtt();
-        setUniform(uniform + "att.constant", att.getConstant());
-        setUniform(uniform + "att.linear", att.getLinear());
-        setUniform(uniform + "att.exponent", att.getExponent());
+        setUniform(uniform + ".att.constant", att.getConstant());
+        setUniform(uniform + ".att.linear", att.getLinear());
+        setUniform(uniform + ".att.exponent", att.getExponent());
 
     }
 
