@@ -1,6 +1,7 @@
 package shader;
 
 import config.Constant;
+import graphic.DirectionalLight;
 import graphic.Material;
 import graphic.PointLight;
 import org.joml.Matrix4f;
@@ -114,6 +115,12 @@ public class ShaderProgram {
         createUniform(uniform + ".reflectance");
     }
 
+    public void createDirectionalLightUniform(String uniform) {
+        createUniform(uniform + ".colour");
+        createUniform(uniform + ".direction");
+        createUniform(uniform + ".intensity");
+    }
+
     public void setUniform(String uniform, Matrix4f value){
         try (MemoryStack memoryStack = MemoryStack.stackPush()){
             FloatBuffer floatBuffer = memoryStack.callocFloat(16);
@@ -161,6 +168,12 @@ public class ShaderProgram {
         setUniform(uniform + ".specular", material.getSpecular());
         setUniform(uniform + ".hasTexture", material.isTextured() ? 1 : 0);
         setUniform(uniform + ".reflectance", material.getReflectance());
+    }
+
+    public void setUniform(String uniform, DirectionalLight directionalLight) {
+        setUniform(uniform + ".colour", directionalLight.getColour());
+        setUniform(uniform + ".direction", directionalLight.getDirection());
+        setUniform(uniform + ".intensity", directionalLight.getIntensity());
     }
 
     public void bind() {

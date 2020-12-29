@@ -55,9 +55,6 @@ void setColour(Material material, vec2 textureCoordinate){
 }
 
 vec4 calcPointLight(PointLight pointLight, vec3 vertexPosition, vec3 vertexNormal) {
-//    vec4 diffuseColour = vec4(0,0,0,0);
-//    vec4 specularColour = vec4(0,0,0,0);
-
     //difuse light
     vec3 toLightDirection = pointLight.position - vertexPosition;
     vec3 toLightNormal = normalize(toLightDirection);
@@ -87,5 +84,4 @@ void main()
     setColour(material, exTextureCoordinate);
     vec4 componentColour = calcPointLight(pointLight, exWorldPos, exVertexNormal);
     fragColor = ambientC * vec4(ambientLight, 1) + componentColour;
-//    fragColor = ambientC * vec4(ambientLight, 1);
 }
