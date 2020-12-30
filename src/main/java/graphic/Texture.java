@@ -24,6 +24,9 @@ public class Texture {
 
     private int textureId;
 
+    private int width;
+    private int height;
+
     public Texture(String textureFile) {
         init(textureFile);
     }
@@ -36,6 +39,8 @@ public class Texture {
         File file = new File(textureFile);
         try {
             PNGDecoder decoder = new PNGDecoder(new FileInputStream(file));
+            this.width = decoder.getWidth();
+            this.height = decoder.getHeight();
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(
                     decoder.getHeight()*decoder.getWidth()*4);
             decoder.decode(byteBuffer, 4*decoder.getWidth(), PNGDecoder.Format.RGBA);
@@ -67,5 +72,13 @@ public class Texture {
 
     public int getTextureId() {
         return textureId;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }
