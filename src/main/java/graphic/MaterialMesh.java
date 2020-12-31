@@ -85,6 +85,8 @@ public class MaterialMesh extends Mesh {
         glDeleteVertexArrays(vaoId);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        material.getTexture().cleanup();
     }
 
     private void initPositionBuffer(float[] positions){

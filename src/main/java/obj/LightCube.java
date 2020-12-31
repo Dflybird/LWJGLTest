@@ -70,6 +70,5 @@ public class LightCube extends GameObj {
     @Override
     public void cleanup() {
         mesh.cleanup();
-        material.getTexture().cleanup();
     }
 }

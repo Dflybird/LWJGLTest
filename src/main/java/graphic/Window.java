@@ -56,6 +56,10 @@ public class Window {
 
         //绘制3D对象时，远处的像素比近处的像素先绘制
         glEnable(GL_DEPTH_TEST);
+
+        // Support for transparencies
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void clean(){

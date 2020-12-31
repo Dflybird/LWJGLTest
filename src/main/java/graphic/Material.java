@@ -27,6 +27,9 @@ public class Material {
     public Material(float reflectance, Texture texture) {
         this(DEFAULT_COLOUR, DEFAULT_COLOUR, DEFAULT_COLOUR, reflectance, texture);
     }
+    public Material(Texture texture) {
+        this(DEFAULT_COLOUR, DEFAULT_COLOUR, DEFAULT_COLOUR, 0, texture);
+    }
 
     public Material(Vector4f ambient, Vector4f diffuse, Vector4f specular, float reflectance, Texture texture) {
         this.ambient = ambient;

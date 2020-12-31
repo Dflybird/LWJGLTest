@@ -2,14 +2,15 @@ package demo;
 
 import game.GameEngine;
 import graphic.PointLight;
-import obj.GameObj;
-import obj.LightBunny;
-import obj.LightCube;
+import obj.*;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import shader.ShaderProgram;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -26,6 +27,8 @@ public class HudDemo extends GameEngine {
     private PointLight pointLight;
     private Vector3f ambientLight;
     private float specularPower;
+
+    private List<Hud> hudList;
 
     @Override
     protected void init() {
@@ -49,10 +52,16 @@ public class HudDemo extends GameEngine {
         program.createPointLightUniforms("pointLight");
         gameObjList.add(new LightCube(new Vector3f(-1f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
         gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
+
+        initHudShader();
     }
 
     private void initHudShader() {
+        hudShaderProgram = new ShaderProgram();
+        hudShaderProgram.init("text.vert", "text.frag");
 
+        hudList = new ArrayList<>();
+        hudList.add(new Hud("hud", hudShaderProgram));
     }
 
     @Override
@@ -149,6 +158,18 @@ public class HudDemo extends GameEngine {
             o.render(window, camera);
         }
         program.unbind();
+
+        renderHud();
+    }
+
+    private void renderHud() {
+        hudShaderProgram.bind();
+
+        for (Hud hud : hudList) {
+            hud.getStatusTextItem().render(window, camera);
+        }
+
+        hudShaderProgram.unbind();
     }
 
     public static void main(String[] args) {
