@@ -28,7 +28,7 @@ public class HudDemo extends GameEngine {
     private Vector3f ambientLight;
     private float specularPower;
 
-    private List<Hud> hudList;
+    private Hud hud;
 
     @Override
     protected void init() {
@@ -60,8 +60,7 @@ public class HudDemo extends GameEngine {
         hudShaderProgram = new ShaderProgram();
         hudShaderProgram.init("text.vert", "text.frag");
 
-        hudList = new ArrayList<>();
-        hudList.add(new Hud("hud", hudShaderProgram));
+        hud = new Hud("hud", hudShaderProgram);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class HudDemo extends GameEngine {
 
     @Override
     protected void step() {
-
+        hud.setCompassRotation(camera.getRotation().y);
     }
 
     @Override
@@ -165,8 +164,10 @@ public class HudDemo extends GameEngine {
     private void renderHud() {
         hudShaderProgram.bind();
 
-        for (Hud hud : hudList) {
-            hud.getStatusTextItem().render(window, camera);
+        hud.updateSize(window);
+
+        for (GameObj o: hud.getGameObjArr()) {
+            o.render(window, camera);
         }
 
         hudShaderProgram.unbind();

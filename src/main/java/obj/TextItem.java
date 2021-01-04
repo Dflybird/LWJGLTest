@@ -21,22 +21,30 @@ public class TextItem extends GameObj {
     private final int numRow;
     private final ShaderProgram program;
     private MaterialMesh mesh;
+    private final Texture texture;
 
     public TextItem(String fontFile, String text, int numCol, int numRow, ShaderProgram program) {
         this.text = text;
         this.numCol = numCol;
         this.numRow = numRow;
         this.program = program;
-        Texture texture = new Texture(fontFile);
+        this.texture = new Texture(fontFile);
         this.mesh = buildMesh(texture);
 
         program.createUniform("projection");
         program.createUniform("colour");
         program.createUniform("texture_sampler");
+        program.createUniform("hasTexture");
     }
 
     public MaterialMesh getMesh() {
         return mesh;
+    }
+
+    public void setText(String text){
+        this.text = text;
+        this.mesh.cleanup();
+        this.mesh = buildMesh(texture);
     }
 
     @Override
@@ -57,6 +65,7 @@ public class TextItem extends GameObj {
         program.setUniform("projection", projectionMatrix);
         program.setUniform("colour", mesh.getMaterial().getAmbient());
         program.setUniform("texture_sampler", 0);
+        program.setUniform("hasTexture", 1);
 
         mesh.render();
     }
@@ -70,10 +79,10 @@ public class TextItem extends GameObj {
         byte[] chars = text.getBytes(StandardCharsets.ISO_8859_1);
         int numChars = chars.length;
 
-        List<Float> positions = new ArrayList();
-        List<Float> textCords = new ArrayList();
+        List<Float> positions = new ArrayList<>();
+        List<Float> textCords = new ArrayList<>();
         float[] normals   = new float[0];
-        List<Integer> indices   = new ArrayList();
+        List<Integer> indices   = new ArrayList<>();
 
         float tileWidth = (float) texture.getWidth() / numCol;
         float tileHeight = (float) texture.getHeight() / numRow;
