@@ -22,21 +22,22 @@ public class TestFont {
 
         Charset charset =  StandardCharsets.UTF_8;
         try {
-            FontTexture fontTexture = new FontTexture(font, charset);
-        } catch (IOException e) {
+            FontTexture fontTexture = new FontTexture(font, charset, "宋体");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void test(){
-        BufferedImage image = new BufferedImage(300, 200, BufferedImage.TYPE_INT_RGB);
-        Graphics img = image.getGraphics();
-        img.setFont(new Font("宋体", Font.BOLD, 20));
-        img.drawString("你好我好", 30, 30);
-        img.drawString("\u5b8b\u4f53", 30, 80);
+        BufferedImage image = new BufferedImage(300, 200, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D img = image.createGraphics();
+        img.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        img.setFont(new Font("宋体", Font.PLAIN, 20));
+        FontMetrics fontMetrics = img.getFontMetrics();
+        img.drawString("你好我好", 0, fontMetrics.getAscent());
         try {
-            ImageIO.write(image, "JPEG", new FileOutputStream("texture/test.PNG"));
+            ImageIO.write(image, "png", new FileOutputStream("texture/test.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

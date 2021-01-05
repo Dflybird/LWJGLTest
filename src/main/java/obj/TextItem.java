@@ -1,9 +1,12 @@
 package obj;
 
 import graphic.*;
+import graphic.Window;
 import org.joml.Matrix4f;
 import shader.ShaderProgram;
 
+import java.awt.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +20,12 @@ public class TextItem extends GameObj {
     private static final int VERTICES_PER_QUAD = 4;
 
     private String text;
-    private final int numCol;
-    private final int numRow;
+    private int numCol;
+    private int numRow;
     private final ShaderProgram program;
     private MaterialMesh mesh;
-    private final Texture texture;
+    private Texture texture;
+    private FontTexture fontTexture;
 
     public TextItem(String fontFile, String text, int numCol, int numRow, ShaderProgram program) {
         this.text = text;
@@ -30,6 +34,21 @@ public class TextItem extends GameObj {
         this.program = program;
         this.texture = new Texture(fontFile);
         this.mesh = buildMesh(texture);
+
+        program.createUniform("projection");
+        program.createUniform("colour");
+        program.createUniform("texture_sampler");
+        program.createUniform("hasTexture");
+    }
+
+    public TextItem(String text, ShaderProgram program) {
+        this.text = text;
+        this.program = program;
+        Font font = new Font("宋体", Font.PLAIN, 20);
+        Charset charset =  StandardCharsets.UTF_8;
+        this.fontTexture = new FontTexture(font, charset, text);
+        this.texture = fontTexture.getTexture();
+        this.mesh = buildMesh();
 
         program.createUniform("projection");
         program.createUniform("colour");
@@ -73,6 +92,80 @@ public class TextItem extends GameObj {
     @Override
     public void cleanup() {
         mesh.cleanup();
+    }
+
+    private MaterialMesh buildMesh() {
+        char[] chars = text.toCharArray();
+        int numChars = chars.length;
+
+        List<Float> positions = new ArrayList<>();
+        List<Float> textCords = new ArrayList<>();
+        float[] normals   = new float[0];
+        List<Integer> indices   = new ArrayList<>();
+
+        float startX = 0;
+        for (int i = 0; i < numChars; i++) {
+            FontTexture.CharInfo charInfo = fontTexture.getCharInfo(chars[i]);
+
+
+            // 0 --- 3
+            // | \   |
+            // |   \ |
+            // 1 --- 2
+            //position 0
+            positions.add(startX); // x
+            positions.add(0.0f); //y
+            positions.add(Z_POS); //z
+            textCords.add((float) charInfo.getStartX() / (float) fontTexture.getWidth());
+            textCords.add(0f);
+
+            //position 1
+            positions.add(startX); // x
+            positions.add((float) fontTexture.getHeight()); //y
+            positions.add(Z_POS); //z
+            textCords.add((float) charInfo.getStartX() / (float) fontTexture.getWidth());
+            textCords.add(1f);
+
+            //position 2
+            positions.add(startX + charInfo.getWidth()); // x
+            positions.add((float) fontTexture.getHeight()); //y
+            positions.add(Z_POS); //z
+            textCords.add((float) (charInfo.getStartX() + charInfo.getWidth()) / (float) fontTexture.getWidth());
+            textCords.add(1f);
+
+            //position 3
+            positions.add(startX + charInfo.getWidth()); // x
+            positions.add(0.0f); //y
+            positions.add(Z_POS); //z
+            textCords.add((float) (charInfo.getStartX() + charInfo.getWidth()) / (float) fontTexture.getWidth());
+            textCords.add(0f);
+
+            // Add indices
+            //0 1 2
+            indices.add(i*VERTICES_PER_QUAD);
+            indices.add(i*VERTICES_PER_QUAD + 1);
+            indices.add(i*VERTICES_PER_QUAD + 2);
+            //3 0 2
+            indices.add(i*VERTICES_PER_QUAD + 3);
+            indices.add(i*VERTICES_PER_QUAD);
+            indices.add(i*VERTICES_PER_QUAD + 2);
+
+            startX += charInfo.getWidth();
+        }
+
+        float[] positionArr = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionArr[i] = positions.get(i);
+        }
+        float[] textCordsArr = new float[textCords.size()];
+        for (int i = 0; i < textCords.size(); i++) {
+            textCordsArr[i] = textCords.get(i);
+        }
+        int[] indicesArr = indices.stream().mapToInt((Integer i) -> i).toArray();
+
+        MaterialMesh mesh = new MaterialMesh(program.getProgramId(), positionArr, indicesArr, textCordsArr, normals);
+        mesh.setMaterial(new Material(texture));
+        return mesh;
     }
 
     private MaterialMesh buildMesh(Texture texture){

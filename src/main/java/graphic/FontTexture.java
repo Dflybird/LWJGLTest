@@ -3,9 +3,11 @@ package graphic;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
@@ -17,12 +19,15 @@ import java.util.HashMap;
  * @Version 1.0
  **/
 public class FontTexture {
-    private static final String IMAGE_FORMAT = "PNG";
+    private static final String IMAGE_FORMAT = "png";
 
     private static final int CHAR_PADDING = 2;
 
     private Font font;
     private Charset charset;
+    private String text;
+
+    private Texture texture;
 
     private HashMap<Character, CharInfo> charMap;
 
@@ -30,30 +35,40 @@ public class FontTexture {
 
     private int width;
 
-    public FontTexture(Font font, String charsetName) throws IOException {
-        this(font, Charset.forName(charsetName));
+    public FontTexture(Font font, String charsetName, String text){
+        this(font, Charset.forName(charsetName), text);
     }
 
-    public FontTexture(Font font, Charset charset) throws IOException {
+    public FontTexture(Font font, Charset charset, String text){
+        this.text = text;
         this.font = font;
         this.charset = charset;
         charMap = new HashMap<>();
 
-        buildTexture();
+        try {
+            buildTexture();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private String getAllAvailableChars(Charset charset) {
         CharsetEncoder encoder = charset.newEncoder();
         StringBuilder builder = new StringBuilder();
-        for (char c = 0; c < Character.MAX_VALUE; c++) {
+        for (char c : text.toCharArray()) {
             if (encoder.canEncode(c)) {
                 builder.append(c);
             }
         }
+//        for (char c = 0; c < Character.MAX_VALUE; c++) {
+//            if (encoder.canEncode(c)) {
+//                builder.append(c);
+//            }
+//        }
         return builder.toString();
     }
 
-    private void buildTexture() throws IOException {
+    private void buildTexture() throws Exception {
         BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = bufferedImage.createGraphics();
         graphics2D.setFont(font);
@@ -72,25 +87,57 @@ public class FontTexture {
         height = fontMetrics.getHeight();
         graphics2D.dispose();
 
+
         //创建匹配此字符集的纹理图形
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics2D = bufferedImage.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.setFont(font);
         fontMetrics = graphics2D.getFontMetrics();
-        graphics2D.setColor(Color.BLACK);
+        graphics2D.setColor(Color.WHITE);
         int startX = 0;
 
-//        for (char c : allChars.toCharArray()) {
-//            CharInfo charInfo = charMap.get(c);
-//            graphics2D.drawString("" + c, startX, fontMetrics.getAscent());
-//            //在字体左边加padding
-//            startX += charInfo.getWidth() + CHAR_PADDING;
-//        }
-        graphics2D.drawString("你好", startX, fontMetrics.getAscent());
+        for (char c : allChars.toCharArray()) {
+            CharInfo charInfo = charMap.get(c);
+            graphics2D.drawString("" + c, startX, fontMetrics.getAscent());
+            //在字体左边加padding
+            startX += charInfo.getWidth() + CHAR_PADDING;
+        }
         graphics2D.dispose();
 
-        ImageIO.write(bufferedImage, IMAGE_FORMAT, new FileOutputStream("texture/temp.PNG"));
+//        ImageIO.write(bufferedImage, IMAGE_FORMAT, new FileOutputStream("texture/temp.png"));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, IMAGE_FORMAT, outputStream);
+        outputStream.flush();
+        byte[] data = outputStream.toByteArray();
+//        ByteBuffer imageBuffer = ByteBuffer.allocateDirect(data.length);
+//        imageBuffer.put(data, 0, data.length);
+//        imageBuffer.flip();
+        texture = new Texture(data);
+    }
+
+    public Font getFont() {
+        return font;
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public CharInfo getCharInfo(char c){
+        return charMap.get(c);
     }
 
     public static class CharInfo{
