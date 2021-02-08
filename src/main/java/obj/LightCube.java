@@ -41,7 +41,7 @@ public class LightCube extends GameObj {
         float fov = (float) Math.toRadians(60);
         float zNear = 0.01f;
         float zFar = 1000f;
-        float aspectRatio = (float) window.getWidth()/window.getHeight();
+        float aspectRatio = (float) window.getWidth()/(float) window.getHeight();
 
         Matrix4f projectionMatrix = new Matrix4f().perspective(fov, aspectRatio, zNear, zFar);
 

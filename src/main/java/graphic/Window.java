@@ -40,6 +40,13 @@ public class Window {
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
+        // Setup resize callback
+        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+            this.width = width;
+            this.height = height;
+            glViewport(0, 0, width, height);
+        });
+
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
         // Enable v-sync
@@ -52,6 +59,7 @@ public class Window {
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+//        glClearColor((float) 0xee/(float) 0xff,(float) 0xee/(float) 0xff,(float) 0xee/(float) 0xff, 0.0f);
 //        glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
         //绘制3D对象时，远处的像素比近处的像素先绘制

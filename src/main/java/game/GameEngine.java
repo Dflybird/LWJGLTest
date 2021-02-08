@@ -5,6 +5,7 @@ import graphic.Window;
 import obj.Camera;
 import obj.GameObj;
 import org.joml.Vector3f;
+import utils.SimTimer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public abstract class GameEngine {
     protected List<GameObj> gameObjList;
     protected Camera camera;
     protected MouseEvent mouseEvent;
+    protected SimTimer timer;
 
     public void run(){
         init();
@@ -35,11 +37,12 @@ public abstract class GameEngine {
     }
 
     protected void init(){
+        this.timer = new SimTimer();
         window = new Window(600, 600);
         window.init();
 
         gameObjList = new ArrayList<>();
-        camera = new Camera(new Vector3f(0, 0, 1f));
+        camera = new Camera(new Vector3f(0, 0, 2f));
 
         mouseEvent = new MouseEvent();
         mouseEvent.init(window);

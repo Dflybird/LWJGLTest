@@ -33,6 +33,8 @@ public class MaterialMesh extends Mesh {
 
     private Material material;
 
+    private float[] pos;
+
     public MaterialMesh(int shaderProgramId, float[] positions, int[] indices, float[] textureCoordinate, float[] normals) {
         this.vertexPosition = glGetAttribLocation(shaderProgramId, "vertexPosition");
         this.textureCoordinate = glGetAttribLocation(shaderProgramId, "textureCoordinate");
@@ -41,7 +43,7 @@ public class MaterialMesh extends Mesh {
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
-
+        pos = positions;
         initPositionBuffer(positions);
         initIndexBuffer(indices);
         initTextureBuffer(textureCoordinate);
@@ -61,6 +63,29 @@ public class MaterialMesh extends Mesh {
         }
 
         glBindVertexArray(vaoId);
+
+//
+//        for (int i = 0; i < pos.length; i++) {
+//            pos[i] *= 1.001;
+//        }
+//        FloatBuffer verticesBuffer = null;
+//        try {
+//            verticesBuffer = MemoryUtil.memAllocFloat(pos.length);
+//            verticesBuffer.put(pos).flip();
+//            glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
+//            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
+//            glVertexAttribPointer(vertexPosition, 3, GL_FLOAT, false, 0, 0);
+//            glEnableVertexAttribArray(vertexPosition);
+//
+//
+//            //解绑VBOs
+//            glBindBuffer(GL_ARRAY_BUFFER, 0);
+//        } finally {
+//            //释放缓存
+//            if (verticesBuffer != null) {
+//                MemoryUtil.memFree(verticesBuffer);
+//            }
+//        }
 
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
