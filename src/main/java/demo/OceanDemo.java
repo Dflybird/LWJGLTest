@@ -4,6 +4,9 @@ import game.GameEngine;
 import obj.ocean.Ocean;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import utils.TimeUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -16,6 +19,8 @@ import static org.lwjgl.opengl.GL11.GL_FILL;
  * @Version 1.0
  **/
 public class OceanDemo extends GameEngine {
+    private final Logger logger = LoggerFactory.getLogger(OceanDemo.class);
+
     private final Vector3f cameraInc = new Vector3f();
     private static final float CAMERA_POS_STEP = 0.05f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
@@ -67,19 +72,45 @@ public class OceanDemo extends GameEngine {
             Vector2f rotVec = mouseEvent.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
+
+        //修改风力
+        if (glfwGetKey(window.getWindow(), GLFW_KEY_N) == GLFW_PRESS) {
+            Ocean.Wind wind = ocean.getWind();
+            wind.setVelocity(wind.getVelocity()-0.1f);
+            ocean.setWind(wind);
+        } else if (glfwGetKey(window.getWindow(), GLFW_KEY_M) == GLFW_PRESS) {
+            Ocean.Wind wind = ocean.getWind();
+            wind.setVelocity(wind.getVelocity()+0.1f);
+            ocean.setWind(wind);
+        }
+        if (glfwGetKey(window.getWindow(), GLFW_KEY_J) == GLFW_PRESS) {
+            Ocean.Wind wind = ocean.getWind();
+            wind.getDirection().x+=1;
+            wind.setDirection(wind.getDirection().normalize());
+            ocean.setWind(wind);
+        } else if (glfwGetKey(window.getWindow(), GLFW_KEY_K) == GLFW_PRESS) {
+            Ocean.Wind wind = ocean.getWind();
+            wind.getDirection().x-=1;
+            wind.setDirection(wind.getDirection().normalize());
+            ocean.setWind(wind);
+        }
     }
 
     @Override
     protected void init() {
         super.init();
-        ocean = new Ocean(32, 32, 32, 32, new Ocean.Wind(32, new Vector2f(0,1)), 0.0005f);
+        ocean = new Ocean(256, 256, 128, 128, new Ocean.Wind(30, new Vector2f(1,0)), 0.000005f);
         camera.setPosition(0,100,0);
 
     }
 
     @Override
     protected void step() {
-        ocean.evaluateWaves((float) timer.getTime());
+        double st = TimeUtil.currentTime();
+//        ocean.evaluateWaves((float) timer.getTime());
+        ocean.evaluateWavesFFT((float) timer.getTime());
+        double et = TimeUtil.currentTime();
+        logger.info("evaluate time: {}s", et - st);
     }
 
     @Override

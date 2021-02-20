@@ -59,7 +59,7 @@ public class MoreLightDemo extends GameEngine {
         program.createPointLightUniforms("pointLight");
         program.createDirectionalLightUniform("directionalLight");
         gameObjList.add(new LightCube(new Vector3f(-1f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
-//        gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
+        gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
     }
 
     @Override
