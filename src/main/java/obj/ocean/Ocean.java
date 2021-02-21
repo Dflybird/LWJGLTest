@@ -2,11 +2,16 @@ package obj.ocean;
 
 import graphic.Material;
 import graphic.Window;
+import graphic.light.DirectionalLight;
+import graphic.light.PointLight;
+import javafx.scene.AmbientLight;
 import obj.Camera;
 import obj.GameObj;
+import obj.weather.Fog;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 import shader.ShaderProgram;
 
@@ -29,6 +34,8 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * @Version 1.0
  **/
 public class Ocean extends GameObj {
+    private static final boolean USE_NEW_GLSL = true;
+
     private int vertexPosition;
     private int textureCoordinate;
     private int vertexNormal;
@@ -43,7 +50,12 @@ public class Ocean extends GameObj {
     private int vaoId;
 
     private ShaderProgram program;
-    private Material material;
+    private Material material = new Material(
+            new Vector4f(0.0f, 0.65f, 0.75f, 1.0f),
+            new Vector4f(0.5f, 0.65f, 0.75f, 1.0f),
+            new Vector4f(1.0f, 0.25f, 0.0f,  1.0f),
+            1, null);
+    private Fog fog = Fog.OCEAN_FLOG;
 
     /** 波一个周期时间长度，将连续色散曲线量化，T越大越接近连续色散曲线，单位：秒 */
     private static final float T = 200;
@@ -165,12 +177,25 @@ public class Ocean extends GameObj {
 
     public void init() {
         program = new ShaderProgram();
-        program.init("ocean.vert", "ocean.frag");
-        program.createUniform("world");
-        program.createUniform("view");
-        program.createUniform("projection");
-        program.createUniform("water");
-        program.createUniform("light_position");
+        if (USE_NEW_GLSL) {
+            program.init("ocean_new.vert", "ocean_new.frag");
+            program.createUniform("world");
+            program.createUniform("view");
+            program.createUniform("projection");
+            program.createUniform("ambientLight");
+            program.createUniform("specularPower");
+            program.createMaterialUniform("material");
+            program.createFogUniform("fog");
+//            program.createDirectionalLightUniform("directionalLight");
+            program.createPointLightsUniform("pointLights", 5);
+        } else {
+            program.init("ocean.vert", "ocean.frag");
+            program.createUniform("world");
+            program.createUniform("view");
+            program.createUniform("projection");
+            program.createUniform("water");
+            program.createUniform("light_position");
+        }
 
         this.vertexPosition = glGetAttribLocation(program.getProgramId(), "vertexPosition");
         this.textureCoordinate = glGetAttribLocation(program.getProgramId(), "textureCoordinate");
@@ -184,6 +209,10 @@ public class Ocean extends GameObj {
         initNormalBuffer(glNormals);
     }
 
+    private Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+    private DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), new Vector3f(1.0f, 0f, 0f), 1);
+    private PointLight pointLight = new PointLight(new Vector3f(1, 1, 1),
+            new Vector3f(1000,100,-1000), 1);
 
     @Override
     public void render(Window window, Camera camera) {
@@ -210,11 +239,23 @@ public class Ocean extends GameObj {
                 .rotateY((float) Math.toRadians(cameraRot.y))
                 .translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
-        program.setUniform("projection", projectionMatrix);
-        program.setUniform("world", worldMatrix);
-        program.setUniform("view", viewMatrix);
-        program.setUniform("water", 0);
-        program.setUniform("light_position", new Vector3f(1000.0f, 100.0f, -1000.0f));
+        if (USE_NEW_GLSL) {
+            program.setUniform("projection", projectionMatrix);
+            program.setUniform("world", worldMatrix);
+            program.setUniform("view", viewMatrix);
+            program.setUniform("ambientLight", ambientLight);
+            program.setUniform("specularPower", 10f);
+            program.setUniform("material", material);
+            program.setUniform("fog", fog);
+//            program.setUniform("directionalLight", directionalLight);
+            program.setUniform("pointLights", new PointLight[]{pointLight});
+        } else {
+            program.setUniform("projection", projectionMatrix);
+            program.setUniform("world", worldMatrix);
+            program.setUniform("view", viewMatrix);
+            program.setUniform("water", 0);
+            program.setUniform("light_position", new Vector3f(1000.0f, 100.0f, -1000.0f));
+        }
 
         //render
         glBindVertexArray(vaoId);

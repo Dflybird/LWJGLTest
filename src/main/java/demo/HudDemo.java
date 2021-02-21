@@ -1,16 +1,13 @@
 package demo;
 
 import game.GameEngine;
-import graphic.PointLight;
+import graphic.light.PointLight;
 import obj.*;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import shader.ShaderProgram;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -48,8 +45,8 @@ public class HudDemo extends GameEngine {
 
         program.createUniform("ambientLight");
         program.createUniform("specularPower");
-        program.createMaterialUniforms("material");
-        program.createPointLightUniforms("pointLight");
+        program.createMaterialUniform("material");
+        program.createPointLightUniform("pointLight");
         gameObjList.add(new LightCube(new Vector3f(-1f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
         gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
 

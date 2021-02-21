@@ -32,19 +32,19 @@ public class OceanDemo extends GameEngine {
     protected void input() {
         cameraInc.set(0,0,0);
         if (glfwGetKey(window.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
-            cameraInc.z = -1;
+            cameraInc.z = -10;
         } else if (glfwGetKey(window.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
-            cameraInc.z = 1;
+            cameraInc.z = 10;
         }
         if (glfwGetKey(window.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
-            cameraInc.x = -1;
+            cameraInc.x = -10;
         } else if (glfwGetKey(window.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
-            cameraInc.x = 1;
+            cameraInc.x = 10;
         }
         if (glfwGetKey(window.getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
-            cameraInc.y = -1;
+            cameraInc.y = -10;
         } else if (glfwGetKey(window.getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
-            cameraInc.y = 1;
+            cameraInc.y = 10;
         }
 
         if (glfwGetKey(window.getWindow(), GLFW_KEY_O) == GLFW_PRESS) {

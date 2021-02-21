@@ -30,14 +30,20 @@ void main (void) {
 	float d = dot(normal1, light_vector1);
 	bool facing = d > 0.0;
 
-	fragColor = emissive_color * emissive_contribution +
-		    ambient_color  * ambient_contribution  * c +
-		    diffuse_color  * diffuse_contribution  * c * max(d, 0) +
-                    (facing ?
-			specular_color * specular_contribution * c * max(pow(dot(normal1, halfway_vector1), 120.0), 0.0) :
-			vec4(0.0, 0.0, 0.0, 0.0));
+//	fragColor = emissive_color * emissive_contribution +
+//		    ambient_color  * ambient_contribution  * c +
+//		    diffuse_color  * diffuse_contribution  * c * max(d, 0) +
+//                    (facing ?
+//			specular_color * specular_contribution * c * max(pow(dot(normal1, halfway_vector1), 120.0), 0.0) :
+//			vec4(0.0, 0.0, 0.0, 0.0));
 
-	fragColor = fragColor * (1.0-fog_factor) + vec4(0.25, 0.75, 0.65, 1.0) * (fog_factor);
+	vec4 diffuseColour = diffuse_color  * diffuse_contribution * max(d, 0);
+	vec4 specularColour = specular_color * specular_contribution * max(pow(dot(normal1, halfway_vector1), 120.0), 0.0);
+	vec4 ambientColour = ambient_color  * ambient_contribution;
+
+	fragColor = ambientColour + specularColour;
+
+		fragColor = fragColor * (1.0-fog_factor) + vec4(0.25, 0.75, 0.65, 1.0) * (fog_factor);
 
 	fragColor.a = 1.0;
 }

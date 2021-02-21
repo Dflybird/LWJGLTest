@@ -1,8 +1,9 @@
 package demo;
 
 import game.GameEngine;
-import graphic.DirectionalLight;
-import graphic.PointLight;
+import graphic.light.DirectionalLight;
+import graphic.light.PointLight;
+import graphic.light.SpotLight;
 import obj.GameObj;
 import obj.LightBunny;
 import obj.LightCube;
@@ -55,9 +56,10 @@ public class MoreLightDemo extends GameEngine {
 
         program.createUniform("ambientLight");
         program.createUniform("specularPower");
-        program.createMaterialUniforms("material");
-        program.createPointLightUniforms("pointLight");
+        program.createMaterialUniform("material");
         program.createDirectionalLightUniform("directionalLight");
+        program.createPointLightsUniform("pointLights",5);
+        program.createSpotLightsUniform("spotLights",5);
         gameObjList.add(new LightCube(new Vector3f(-1f,0,-1.5f), new Vector3f(0,0,0),0.3f, program));
         gameObjList.add(new LightBunny(new Vector3f(1f,0,-1.5f), new Vector3f(0,0,0),0.4f, program));
     }
@@ -171,7 +173,11 @@ public class MoreLightDemo extends GameEngine {
         lightPos.x = lightPosInWord.x;
         lightPos.y = lightPosInWord.y;
         lightPos.z = lightPosInWord.z;
-        program.setUniform("pointLight", currentPointLight);
+//        program.setUniform("pointLights", new PointLight[]{currentPointLight});
+
+        SpotLight spotLight = new SpotLight(currentPointLight, new Vector3f(1,0,0), 30);
+
+        program.setUniform("spotLights", new SpotLight[]{spotLight});
 
         DirectionalLight currentDirectionalLight = new DirectionalLight(directionalLight);
         Vector3f lightDirection = currentDirectionalLight.getDirection();

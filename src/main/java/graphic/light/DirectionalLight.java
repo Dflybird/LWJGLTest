@@ -1,4 +1,4 @@
-package graphic;
+package graphic.light;
 
 import org.joml.Vector3f;
 
