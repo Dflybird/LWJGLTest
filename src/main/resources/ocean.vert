@@ -17,7 +17,10 @@ out vec2 tex_coord;
 
 void main() {
     gl_Position = view * world * vec4(vertexPosition, 1.0);
-    fog_factor = min(-gl_Position.z/500.0, 1.0);
+
+    float density = 10;
+    float distance = length(gl_Position) / 1.0;
+    fog_factor = min(-gl_Position.z/100.0, 1.0);
     gl_Position = projection * gl_Position;
 
     vec4 v = view * world * vec4(vertexPosition, 1.0);

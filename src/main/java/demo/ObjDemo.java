@@ -23,6 +23,7 @@ public class ObjDemo extends GameEngine {
         super.init();
         gameObjList.add(new Cube(new Vector3f(-0.5f,0,-1.5f), new Vector3f(0,0,0),0.2f));
         gameObjList.add(new Bunny(new Vector3f(0.5f,0,-1.5f), new Vector3f(0,0,0),0.3f));
+        gameObjList.add(new Boat(new Vector3f(0f,2f,0f), new Vector3f(0,0,0),0.3f));
         gameObjList.add(new LocalModel(Constant.DEFAULT_RESOURCES_DIR + "/models/island.obj",
                 new Vector3f(0f,0,-3f), new Vector3f(0,0,0),0.01f));
     }

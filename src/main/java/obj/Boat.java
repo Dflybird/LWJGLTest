@@ -1,33 +1,33 @@
 package obj;
 
 import config.Constant;
-import graphic.ObjMesh;
-import graphic.Texture;
-import graphic.Window;
+import graphic.*;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import shader.ShaderProgram;
 
+
 /**
  * @Author Gq
- * @Date 2020/12/22 23:20
+ * @Date 2021/1/30 15:26
  * @Version 1.0
  **/
-public class Bunny extends GameObj {
+public class Boat extends GameObj {
     private ShaderProgram program;
     private ObjMesh mesh;
+
     private ObjModel objModel;
 
-    public Bunny(Vector3f position, Vector3f rotation, float scale) {
+    public Boat(Vector3f position, Vector3f rotation, float scale) {
         super(position, rotation, scale);
         init();
     }
 
-    private void init(){
+    private void init() {
         program = new ShaderProgram();
         program.init("obj.vert", "obj.frag");
 
-        objModel = ObjModel.loadObj(Constant.DEFAULT_RESOURCES_DIR + "/models/bunny.obj");
+        objModel = ObjModel.loadObj(Constant.DEFAULT_RESOURCES_DIR + "/models/boat2.obj");
 
         mesh = new ObjMesh(program.getProgramId(),
                 objModel.getVertices(),
@@ -40,6 +40,7 @@ public class Bunny extends GameObj {
         program.createUniform("texture_sampler");
         program.createUniform("useColour");
     }
+
     @Override
     public void render(Window window, Camera camera) {
         program.bind();

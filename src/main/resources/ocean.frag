@@ -17,10 +17,10 @@ void main (void) {
 
 	vec4 c = vec4(1,1,1,1);//texture(water, tex_coord);
 
-	vec4 emissive_color = vec4(1.0, 1.0, 1.0,  1.0);
 	vec4 ambient_color  = vec4(0.0, 0.65, 0.75, 1.0);
 	vec4 diffuse_color  = vec4(0.5, 0.65, 0.75, 1.0);
-	vec4 specular_color = vec4(1.0, 0.25, 0.0,  1.0);
+	vec4 diffuse_color  = vec4(1.0, 1.0, 1.0,  1.0);
+	vec4 specular_color = vec4(1.0, 1.0, 1.0,  1.0);
 
 	float emissive_contribution = 0.00;
 	float ambient_contribution  = 0.30;
@@ -43,7 +43,7 @@ void main (void) {
 
 	fragColor = ambientColour + specularColour;
 
-		fragColor = fragColor * (1.0-fog_factor) + vec4(0.25, 0.75, 0.65, 1.0) * (fog_factor);
+	fragColor = fragColor * fogFactor + vec4(0.7f, 0.7f, 0.7f, 1f) * (1.0 - fogFactor);
 
 	fragColor.a = 1.0;
 }

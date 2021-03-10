@@ -99,8 +99,9 @@ public class OceanDemo extends GameEngine {
     @Override
     protected void init() {
         super.init();
-        ocean = new Ocean(256, 256, 128, 128, new Ocean.Wind(30, new Vector2f(1,0)), 0.000005f);
+        ocean = new Ocean(128, 128, 128, 128, new Ocean.Wind(30, new Vector2f(1,0)), 0.00005f);
         camera.setPosition(0,100,0);
+        camera.setRotation(32f, 190f, 3.1415927f);
 
     }
 
@@ -111,6 +112,7 @@ public class OceanDemo extends GameEngine {
         ocean.evaluateWavesFFT((float) timer.getTime());
         double et = TimeUtil.currentTime();
         logger.info("evaluate time: {}s", et - st);
+        logger.info("ro {}| {}| {}",camera.getRotation().x, camera.getRotation().y, camera.getRotation().z);
     }
 
     @Override

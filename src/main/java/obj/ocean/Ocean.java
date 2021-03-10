@@ -307,8 +307,8 @@ public class Ocean extends GameObj {
 
 
         //平铺
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1; j++) {
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
                 worldMatrix.identity();
                 worldMatrix.scale(new Vector3f(5,5,5));
                 worldMatrix.translate(new Vector3f(Lx * i, 0, Lz * -j));
